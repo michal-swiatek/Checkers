@@ -31,7 +31,7 @@ class Board:
         self.tile_size = int((height - Board.TEXT_HEIGHT) / Board.DIMENSIONS)
         self.tile_offset = Board.TEXT_WIDTH
 
-        self.font = pygame.font.SysFont("Arial", Board.FONT_SIZE)
+        self.font = pygame.font.SysFont("Arial", Board.FONT_SIZE, True)
 
         # Load labels
         a = ord('a')
