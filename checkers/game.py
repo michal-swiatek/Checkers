@@ -1,17 +1,16 @@
 """
     Created by michal-swiatek on 29.03.2020
     Github: https://github.com/michal-swiatek
-
-    Last update: 30.03.2020
+    Last update: 31.03.2020
 """
 
 import copy
 
 import pygame
 
+import player
 from board import Board
 from piece import King
-import player
 
 
 class Game:
@@ -31,6 +30,9 @@ class Game:
         self.white_player = player.Human(Board.WHITE)
         self.red_player = player.Human(Board.RED)
 
+        # Available moves (including players turns)
+        self.valid_moves = []
+
         self.turn = Board.WHITE
 
         # Multiple capture
@@ -39,6 +41,8 @@ class Game:
 
         # Animation
         self.held_piece = None
+
+        self.updateValidMoves()
 
     def __del__(self):
         pygame.quit()
@@ -58,6 +62,9 @@ class Game:
 
                     mouse_x, mouse_y = pygame.mouse.get_pos()
                     grid_x, grid_y = self.board.screenToGrid(mouse_x, mouse_y)
+
+                    if not self.canBeHighlighted(grid_x, grid_y):
+                        continue
 
                     # Take piece off board
                     try:
@@ -87,13 +94,18 @@ class Game:
                         self.held_piece.screen_x = mouse_x - int(self.board.tile_size / 2)
                         self.held_piece.screen_y = mouse_y - int(self.board.tile_size / 2)
 
+            #
             # Game logic
+            #
             self.update()
 
             # Drawing
             self.screen.fill((255, 255, 255))  # White
 
             self.board.show(self.screen, self.held_piece)
+
+            self.showPossibleMoves()
+            self.showHints()
 
             # Show held piece
             if self.held_piece is not None:
@@ -104,6 +116,7 @@ class Game:
     def update(self):
         move = None
 
+        # Get move from player
         if self.turn == Board.WHITE:
             move = self.white_player.makeMove(self.board)
         elif self.turn == Board.RED:
@@ -136,6 +149,8 @@ class Game:
                 self.captured_pieces = []
                 self.turn = not self.turn
 
+            self.updateValidMoves()
+
     def validMove(self, move):
         if move is None:
             return False
@@ -151,18 +166,28 @@ class Game:
 
             return False
 
-        white_moves, red_moves = self.board.getPossibleMoves()
+        self.updateValidMoves()
 
-        if self.turn == Board.WHITE:
-            for valid_move in white_moves:
-                if move == valid_move:
-                    return True
-        elif self.turn == Board.RED:
-            for valid_move in red_moves:
-                if move == valid_move:
-                    return True
+        for valid_move in self.valid_moves:
+            if move == valid_move:
+                return True
 
         return False
+
+    def updateValidMoves(self):
+        # Multiple capture
+        if len(self.captured_pieces) != 0:
+            bitmap = self.board.getBoardBitmap(self.captured_pieces, self.turn)
+            moves, captures = self.capturing_piece.generatePossibleMoves(bitmap, True)
+
+            self.valid_moves = captures
+        else:
+            white_moves, red_moves = self.board.getPossibleMoves()
+
+            if self.turn == Board.WHITE:
+                self.valid_moves = white_moves
+            elif self.turn == Board.RED:
+                self.valid_moves = red_moves
 
     def checkCapture(self, move):
         x1, y1, x2, y2 = move
@@ -198,3 +223,45 @@ class Game:
 
         self.board.board_state[x2][y2] = piece
         self.board.board_state[x1][y1] = None
+
+    def showPossibleMoves(self):
+        for move in self.valid_moves:
+            x1, y1, x2, y2 = move
+
+            x = x2 * self.board.tile_size + self.board.tile_offset
+            y = y2 * self.board.tile_size
+
+            pygame.draw.rect(self.screen, (0, 255, 0), (x, y, self.board.tile_size, self.board.tile_size), 2)
+
+    def showHints(self):
+        if self.held_piece is None or not self.canBeHighlighted(self.held_piece.grid_x, self.held_piece.grid_y):
+            return
+
+        bitmap = self.board.getBoardBitmap(self.captured_pieces, self.turn)
+        moves, captures = self.held_piece.generatePossibleMoves(bitmap)
+
+        if len(captures) != 0:
+            moves = captures
+
+        for move in moves:
+            if move not in self.valid_moves:
+                continue
+
+            x1, y1, x2, y2 = move
+
+            x = x2 * self.board.tile_size + self.board.tile_offset
+            y = y2 * self.board.tile_size
+
+            pygame.draw.rect(self.screen, (255, 255, 0), (x, y, self.board.tile_size, self.board.tile_size), 4)
+
+    def canBeHighlighted(self, piece_x, piece_y):
+        if len(self.valid_moves) == 0:
+            return True
+
+        for move in self.valid_moves:
+            x1, y1, x2, y2 = move
+
+            if piece_x == x1 and piece_y == y1:
+                return True
+
+        return False

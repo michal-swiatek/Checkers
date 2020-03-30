@@ -1,8 +1,7 @@
 """
     Created by michal-swiatek on 29.03.2020
     Github: https://github.com/michal-swiatek
-
-    Last update: 30.03.2020
+    Last update: 31.03.2020
 """
 
 import copy
@@ -104,6 +103,24 @@ class Board:
             red_moves = red_captures
 
         return white_moves, red_moves
+
+    def getValidMoves(self, pieces, captured_pieces=None, captured_color=True):
+        valid_moves = []
+        captures = []
+
+        bitmap = self.getBoardBitmap(captured_pieces, captured_color)
+
+        for piece in pieces:
+            only_captures = len(captures) != 0
+
+            moves, captures = piece.generatePossibleMoves(bitmap, only_captures)
+
+            if only_captures or len(captures) != 0:
+                captures.extend(captures)
+            else:
+                valid_moves.extend(moves)
+
+        return valid_moves, captures
 
     #
     # Drawing

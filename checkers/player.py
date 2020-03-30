@@ -1,7 +1,6 @@
 """
     Created by michal-swiatek on 29.03.2020
     Github: https://github.com/michal-swiatek
-
     Last update: 30.03.2020
 """
 
