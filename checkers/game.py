@@ -14,9 +14,11 @@ from piece import King
 
 
 class Game:
+    FILL_COLOR = 218, 165, 32  # goldenrod
 
     def __init__(self, width: int = 640, height: int = 480):
         pygame.init()
+        pygame.font.init()
 
         self.running = True
         self.screen = pygame.display.set_mode((width, height))
@@ -100,7 +102,7 @@ class Game:
             self.update()
 
             # Drawing
-            self.screen.fill((255, 255, 255))  # White
+            self.screen.fill(Game.FILL_COLOR)
 
             self.board.show(self.screen, self.held_piece)
 

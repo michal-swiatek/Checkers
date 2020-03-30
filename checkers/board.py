@@ -19,11 +19,24 @@ class Board:
     WHITE: bool = True
     RED: bool = False
 
+    TEXT_HEIGHT: int = 40
+    TEXT_WIDTH: int = 40
+
+    TEXT_COLOR = 0, 0, 0
+    FONT_SIZE: int = 40
+
     def __init__(self, width, height):
         self.board_state = [[None for i in range(Board.DIMENSIONS)] for i in range(Board.DIMENSIONS)]
 
-        self.tile_size = int(height / Board.DIMENSIONS)
-        self.tile_offset = int((width - 8 * self.tile_size) / 2)
+        self.tile_size = int((height - Board.TEXT_HEIGHT) / Board.DIMENSIONS)
+        self.tile_offset = Board.TEXT_WIDTH
+
+        self.font = pygame.font.SysFont("Arial", Board.FONT_SIZE)
+
+        # Load labels
+        a = ord('a')
+        self.letters = [self.font.render(str(chr(i + a)), False, Board.TEXT_COLOR) for i in range(Board.DIMENSIONS)]
+        self.numbers = [self.font.render(str(i + 1), False, Board.TEXT_COLOR) for i in range(Board.DIMENSIONS)]
 
         # White pieces
         for y in range(Board.DIMENSIONS - Board.STARTING_ROWS, Board.DIMENSIONS):
@@ -151,6 +164,14 @@ class Board:
 
         # Draw outline
         pygame.draw.rect(screen, (0, 0, 0), (self.tile_offset, 0, 8 * self.tile_size, 8 * self.tile_size), 4)
+
+        # Draw letters
+        for i, letter in enumerate(self.letters):
+            screen.blit(letter, (Board.TEXT_WIDTH + i * self.tile_size + 15, Board.DIMENSIONS * self.tile_size - 5))
+
+        # Draw numbers
+        for i, letter in enumerate(self.numbers):
+            screen.blit(letter, (15, i * self.tile_size + 5))
 
     def screenToGrid(self, screen_x, screen_y):
         grid_x = int((screen_x - self.tile_offset) / self.tile_size)
