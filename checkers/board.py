@@ -20,7 +20,7 @@ class Board:
     RED: bool = False
 
     TEXT_HEIGHT: int = 40
-    TEXT_WIDTH: int = 40
+    TEXT_WIDTH: int = 30
 
     TEXT_COLOR = 0, 0, 0
     FONT_SIZE: int = 40
@@ -171,7 +171,7 @@ class Board:
 
         # Draw numbers
         for i, letter in enumerate(self.numbers):
-            screen.blit(letter, (15, i * self.tile_size + 5))
+            screen.blit(letter, (5, i * self.tile_size + 5))
 
     def screenToGrid(self, screen_x, screen_y):
         grid_x = int((screen_x - self.tile_offset) / self.tile_size)
