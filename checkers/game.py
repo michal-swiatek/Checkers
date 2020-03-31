@@ -29,6 +29,8 @@ class Game:
         #
         # Game
         #
+        self.game_finished = False
+
         self.board = Board(width, height)
 
         # Players
@@ -53,6 +55,7 @@ class Game:
         self.turn_texture = self.font.render("Turn: ", False, Game.TEXT_COLOR)
         self.white_texture = self.font.render("WHITE", False, Game.TEXT_COLOR)
         self.red_texture = self.font.render("RED", False, Game.TEXT_COLOR)
+        self.wins_texture = self.font.render("WINS!", False, Game.TEXT_COLOR)
 
         self.updateValidMoves()
 
@@ -75,7 +78,7 @@ class Game:
                     mouse_x, mouse_y = pygame.mouse.get_pos()
                     grid_x, grid_y = self.board.screenToGrid(mouse_x, mouse_y)
 
-                    if not self.canBeHighlighted(grid_x, grid_y):
+                    if not self.canBeHighlighted(grid_x, grid_y) or self.game_finished:
                         continue
 
                     # Take piece off board
@@ -109,15 +112,17 @@ class Game:
             #
             # Game logic
             #
-            self.update()
+            if not self.game_finished:
+                self.update()
 
             # Drawing
             self.screen.fill(Game.FILL_COLOR)
 
             self.board.show(self.screen, self.held_piece)
 
-            self.showPossibleMoves()
-            self.showHints()
+            if not self.game_finished:
+                self.showPossibleMoves()
+                self.showHints()
 
             self.showGameInfo()
 
@@ -164,6 +169,9 @@ class Game:
                 self.turn = not self.turn
 
             self.updateValidMoves()
+
+        if len(self.valid_moves) == 0:
+            self.game_finished = True
 
     def validMove(self, move):
         if move is None:
@@ -292,3 +300,16 @@ class Game:
             self.screen.blit(self.white_texture, (turn_x, turn_y + 1))
         elif self.turn == Board.RED:
             self.screen.blit(self.red_texture, (turn_x, turn_y + 1))
+
+        # Show game result
+        if self.game_finished:
+            if self.turn == Board.WHITE:
+                winner_texture = self.red_texture
+            elif self.turn == Board.RED:
+                winner_texture = self.white_texture
+
+            texture_x = Board.TEXT_WIDTH + Board.DIMENSIONS * self.board.tile_size + 10
+            texture_y = 100
+
+            self.screen.blit(winner_texture, (texture_x, texture_y))
+            self.screen.blit(self.wins_texture, (texture_x + winner_texture.get_size()[0] + 5, texture_y))
