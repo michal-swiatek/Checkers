@@ -35,7 +35,7 @@ class Game:
 
         # Players
         self.white_player = player.Human(Board.WHITE)
-        self.red_player = player.Human(Board.RED)
+        self.red_player = player.SimpleAI(Board.RED)
 
         # Available moves (including players turns)
         self.valid_moves = []
@@ -137,9 +137,9 @@ class Game:
 
         # Get move from player
         if self.turn == Board.WHITE:
-            move = self.white_player.makeMove(self.board)
+            move = self.white_player.makeMove(self.board, self.held_piece, self.captured_pieces)
         elif self.turn == Board.RED:
-            move = self.red_player.makeMove(self.board)
+            move = self.red_player.makeMove(self.board, self.held_piece, self.captured_pieces)
 
         if self.validMove(move):
             self.movePiece(move)
