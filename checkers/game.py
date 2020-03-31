@@ -16,6 +16,9 @@ from piece import King
 class Game:
     FILL_COLOR = 218, 165, 32  # goldenrod
 
+    FONT_SIZE: int = 30
+    TEXT_COLOR = 0, 0, 0  # black
+
     def __init__(self, width: int = 640, height: int = 480):
         pygame.init()
         pygame.font.init()
@@ -43,6 +46,13 @@ class Game:
 
         # Animation
         self.held_piece = None
+
+        # Info display
+        self.font = pygame.font.SysFont("Arial", Game.FONT_SIZE, True)
+
+        self.turn_texture = self.font.render("Turn: ", False, Game.TEXT_COLOR)
+        self.white_texture = self.font.render("WHITE", False, Game.TEXT_COLOR)
+        self.red_texture = self.font.render("RED", False, Game.TEXT_COLOR)
 
         self.updateValidMoves()
 
@@ -108,6 +118,8 @@ class Game:
 
             self.showPossibleMoves()
             self.showHints()
+
+            self.showGameInfo()
 
             # Show held piece
             if self.held_piece is not None:
@@ -267,3 +279,16 @@ class Game:
                 return True
 
         return False
+
+    def showGameInfo(self):
+        turn_x = Board.TEXT_WIDTH + Board.DIMENSIONS * self.board.tile_size + 10
+        turn_y = 15
+
+        self.screen.blit(self.turn_texture, (turn_x, turn_y))
+
+        turn_x += self.turn_texture.get_size()[0]
+
+        if self.turn == Board.WHITE:
+            self.screen.blit(self.white_texture, (turn_x, turn_y + 1))
+        elif self.turn == Board.RED:
+            self.screen.blit(self.red_texture, (turn_x, turn_y + 1))
