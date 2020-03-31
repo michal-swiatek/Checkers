@@ -30,6 +30,9 @@ class Piece:
     def generatePossibleMoves(self, bitmap: [[bool]], only_captures: bool = False) -> ([()], [()]):
         pass
 
+    def getScore(self):
+        pass
+
 
 class Pawn(Piece):
 
@@ -86,6 +89,14 @@ class Pawn(Piece):
         # Check move
         if not only_captures and 0 <= x < dimensions and 0 <= y < dimensions and bitmap[x][y] is None:
             moves.append((self.grid_x, self.grid_y, x, y))
+
+    def getScore(self, bitmap):
+        moves, captures = self.generatePossibleMoves(bitmap)
+
+        if len(captures) != 0:
+            moves = captures
+
+        return len(moves)
 
 
 class King(Pawn):

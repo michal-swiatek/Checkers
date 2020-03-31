@@ -34,7 +34,7 @@ class Game:
         self.board = Board(width, height)
 
         # Players
-        self.white_player = player.Human(Board.WHITE)
+        self.white_player = player.Minimax(Board.WHITE)
         self.red_player = player.Human(Board.RED)
 
         # Available moves (including players turns)
@@ -137,9 +137,9 @@ class Game:
 
         # Get move from player
         if self.turn == Board.WHITE:
-            move = self.white_player.makeMove(self.board)
+            move = self.white_player.makeMove(self.board, self.held_piece, self.captured_pieces, self.capturing_piece)
         elif self.turn == Board.RED:
-            move = self.red_player.makeMove(self.board)
+            move = self.red_player.makeMove(self.board, self.held_piece, self.captured_pieces, self.capturing_piece)
 
         if self.validMove(move):
             self.movePiece(move)
@@ -158,6 +158,11 @@ class Game:
                     self.capturing_piece = capturing_piece
                 else:
                     self.capturing_piece = None
+
+                if self.turn == Board.RED and not self.red_player.human:
+                    pygame.time.delay(500)
+                elif self.turn == Board.WHITE and not self.red_player.human:
+                    pygame.time.delay(500)
 
             # At the end of capture clear the table and change turns
             if self.capturing_piece is None:
