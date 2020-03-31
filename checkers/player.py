@@ -91,8 +91,10 @@ class Minimax(SimpleAI):
     MAX_MOVES: int = 100
     STATIC_POINTS: int = 10
 
+    DEPTH: int = 8
+
     def makeMove(self, board, held_piece=None, captured_pieces=None, capturing_piece=None):
-        _, moves = self.minimax(board, captured_pieces, capturing_piece, 8)
+        _, moves = self.minimax(board, captured_pieces, capturing_piece, Minimax.DEPTH)
         return random.choice(moves)
 
     def minimax(self, board, captured_pieces, capturing_piece, depth=1, sign=1, alpha=-math.inf, beta=math.inf):
