@@ -161,7 +161,7 @@ class Game:
 
                 if self.turn == Board.RED and not self.red_player.human:
                     pygame.time.delay(500)
-                elif self.turn == Board.WHITE and not self.red_player.human:
+                elif self.turn == Board.WHITE and not self.white_player.human:
                     pygame.time.delay(500)
 
             # At the end of capture clear the table and change turns
