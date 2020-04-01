@@ -91,7 +91,7 @@ class Minimax(SimpleAI):
     MAX_MOVES: int = 100
     STATIC_POINTS: int = 10
 
-    DEPTH: int = 8
+    DEPTH: int = 6
 
     def makeMove(self, board, held_piece=None, captured_pieces=None, capturing_piece=None):
         _, moves = self.minimax(board, captured_pieces, capturing_piece, Minimax.DEPTH)
@@ -120,7 +120,7 @@ class Minimax(SimpleAI):
             capturing_piece, captured_piece = self.doMove(board, captured_pieces, color, move, len(captures) != 0)
 
             if capturing_piece is not None:
-                evaluation, _ = self.minimax(board, captured_pieces, capturing_piece, depth - 1, sign, alpha, beta)
+                evaluation, _ = self.minimax(board, captured_pieces, capturing_piece, depth, sign, alpha, beta)
             else:
                 evaluation, _ = self.minimax(board, [], None, depth - 1, -sign, alpha, beta)
 
