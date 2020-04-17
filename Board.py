@@ -1,55 +1,61 @@
-import Pieces
+import itertools
+
+from Pieces import Piece, Man, King
+
 
 class Board:
     """Prepares and stores the board state."""
     def __init__(self):
-        self.grid = [[None for columns in range(8)] for rows in range(8)]
-        #placeholder
-        self.grid[0][0] = Pieces.Man("white", 0, 0)
-        self.grid[0][2] = Pieces.Man("white", 0, 2)
-        self.grid[0][4] = Pieces.Man("white", 0, 4)
-        self.grid[0][6] = Pieces.Man("white", 0, 6)
-        self.grid[1][1] = Pieces.Man("white", 1, 1)
-        self.grid[1][3] = Pieces.Man("white", 1, 3)
-        self.grid[1][5] = Pieces.Man("white", 1, 5)
-        self.grid[1][7] = Pieces.Man("white", 1, 7)
-        self.grid[2][0] = Pieces.Man("white", 2, 0)
-        self.grid[2][2] = Pieces.Man("white", 2, 2)
-        self.grid[2][4] = Pieces.Man("white", 2, 4)
-        self.grid[2][6] = Pieces.Man("white", 2, 6)
-        self.grid[5][1] = Pieces.Man("black", 5, 1)
-        self.grid[5][3] = Pieces.Man("black", 5, 3)
-        self.grid[5][5] = Pieces.Man("black", 5, 5)
-        self.grid[5][7] = Pieces.Man("black", 5, 7)
-        self.grid[6][0] = Pieces.Man("black", 6, 0)
-        self.grid[6][2] = Pieces.Man("black", 6, 2)
-        self.grid[6][4] = Pieces.Man("black", 6, 4)
-        self.grid[6][6] = Pieces.Man("black", 6, 6)
-        self.grid[7][1] = Pieces.Man("black", 7, 1)
-        self.grid[7][3] = Pieces.Man("black", 7, 3)
-        self.grid[7][5] = Pieces.Man("black", 7, 5)
-        self.grid[7][7] = Pieces.Man("black", 7, 7)
+        self.white_pieces = []
+        self.black_pieces = []
 
-    def condense(self):
-        """Placeholder name - creates board bitmap"""
-        result = [[None for columns in range(8)] for rows in range(8)]
-        c = 0
-        r = 0
-        while r < 8:
-            c = 0
-            while c < 8:
-                if self.grid[r][c] != None:
-                    result[r][c] = 1
-                else:
-                    result[r][c] = 0        #placeholder - debug purposes
-                c = c + 1
-            r = r + 1
+        # White pieces
+        for y in range(3):
+            for x in range(8):
+                if (x + y) % 2 == 0:
+                    self.white_pieces.append(Man(Piece.WHITE, y, x))
 
-        return result
+        # Black pieces
+        for y in range(5, 8):
+            for x in range(8):
+                if (x + y) % 2 == 0:
+                    self.white_pieces.append(Man(Piece.BLACK, y, x))
 
+    def generateBitmap(self):
+        """Creates board bitmap"""
+        bitmap = [[None for columns in range(8)] for rows in range(8)]
+
+        for piece in self.white_pieces:
+            if not piece.captured:
+                bitmap[piece.column][piece.row] = piece.white
+            else:
+                bitmap[piece.column][piece.row] = not piece.white
+
+        for piece in self.black_pieces:
+            if not piece.captured:
+                bitmap[piece.column][piece.row] = piece.white
+            else:
+                bitmap[piece.column][piece.row] = not piece.white
+
+        return bitmap
+
+    def generateBoardState(self):
+        """Generates board state as 8x8 matrix"""
+        grid = [[None for i in range(8)] for i in range(8)]
+
+        for white_piece, black_piece in itertools.zip_longest(self.white_pieces, self.black_pieces):
+            if white_piece is not None:
+                grid[white_piece.column][white_piece.row] = white_piece
+            if black_piece is not None:
+                grid[black_piece.column][black_piece.row] = black_piece
+
+        return grid
 
     def display(self):
         """Draws the board"""
+
+        grid = self.generateBoardState()
+
         c = 0
         r = 7
         print("\n", "  ###################", end='')
@@ -57,17 +63,17 @@ class Board:
             c = 0
             print("\n", r, "#", end='')
             while c < 8:
-                if self.grid[r][c] == None:
+                if grid[c][r] is None:
                     if (r + c) % 2 == 0:
                         print(" +", end='')
                     else:
                         print(" .", end='')
-                elif self.grid[r][c].alive != 1:
+                elif grid[c][r].captured:
                     print(" *", end='')
-                elif self.grid[r][c].owner == "white":
-                    print(" @", end='')
-                elif self.grid[r][c].owner == "black":
+                elif not grid[c][r].white:
                     print(" %", end='')
+                elif grid[c][r].white:
+                    print(" @", end='')
                 c = c + 1
             print(" #", end='')
             r = r - 1
@@ -76,15 +82,7 @@ class Board:
     def clear_captured(self):
         """Removes captured pieces from the board"""
 
-        c = 0
-        r = 0
-        while r < 8:
-            c = 0
-            while c < 8:
-                if self.grid[r][c] != None and self.grid[r][c].alive == 0:
-                    self.grid[r][c] = None
-                c = c + 1
-            r = r + 1
+        pass    # TODO: Implement
 
 
 #------------------------------------------------------------------------------------------------------------------------------------------
