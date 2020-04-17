@@ -1,21 +1,85 @@
+import Pieces
+
+
 class Player:
+    def __init__(self, color):
+        self.color = color
+
+    def pass_control(self, board, capturing_piece):
+        pass
+
+    def getValidMoves(self, board, capturing_piece, color):
+        pieces = board.getPieces(color)
+        if capturing_piece is not None:
+            pieces = [capturing_piece]
+
+        valid_moves, valid_captures = [], []
+        board_bitmap = board.generateBitmap()
+
+        for piece in pieces:
+            moves, captures = piece.generateValidMoves(board_bitmap, len(valid_captures) != 0)
+
+            if len(captures) != 0:
+                valid_captures.extend(captures)
+            else:
+                valid_moves.extend(moves)
+
+        if len(valid_captures) != 0:
+            return valid_captures
+        else:
+            return valid_moves
+
+
+class Human(Player):
     """Human player"""
 
-    def pass_control(self, boardstate):
-        boardstate.display()
-        print("Instruction prompt:")       #  ---  placeholder for prompt - (surrender or move - temporary format:  1 2 3 4; where 1 2 - start coordinates,  3 4 - end coordinates)
-        while   1 == 1:
-            user_input = input("Enter command:  ")
-            if user_input == "surrender":
-                return "surrender"
-            elif user_input == "wrong":    #      --- placeholder - input verification
-                print("\n", "Wrong input placeholder message", "\n")
+    def pass_control(self, board, capturing_piece):
+        valid_moves = self.getValidMoves(board, capturing_piece, self.color)
+
+        if len(valid_moves) == 0:
+            return "game over"
+
+        while True:
+            board.display()
+
+            if self.color == Pieces.Piece.WHITE:
+                print("\n\tWHITE turn")
             else:
-                return user_input
+                print("\n\tBLACK turn")
+
+            self.displayValidMoves(valid_moves)
+
+            user_input = input("Enter move: ")
+            try:
+                index = int(user_input)
+                if index == 0:
+                    return "surrender"
+                else:
+                    return valid_moves[index - 1]
+            except (ValueError, IndexError):
+                continue
+
+    def displayValidMoves(self, valid_moves):
+        print("0. Surrender")
+        for i, move in enumerate(valid_moves, 1):
+            x1, y1, x2, y2, capture_x, capture_y = move
+
+            # Enumeration
+            print(i, '.', sep='', end=' ')
+
+            # Coords
+            print(x1, y1, end=", ")
+            print(x2, y2, end='')
+
+            # Capture
+            if capture_x is not None:
+                print(", Capturing:", capture_x, capture_y)
+            else:
+                print()  # New line
 
 
 class MinMaxBot(Player):
     """Bot using MinMax algorithm with alpha-beta pruning"""
 
-    def pass_control(self, boardstate):
+    def pass_control(self, board_state, capturing_piece):
         pass        #TO DO LATER
