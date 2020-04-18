@@ -1,6 +1,6 @@
 import itertools
 
-from Pieces import Piece, Man, King
+from Pieces import Piece, Man
 
 
 class Board:
@@ -66,7 +66,7 @@ class Board:
 
         c = 0
         r = 7
-        print("  ###################", end='')
+        print("   ###################", end='')
         while r >= 0:
             c = 0
             print("\n", r, "#", end='')

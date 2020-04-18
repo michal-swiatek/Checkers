@@ -60,16 +60,16 @@ class Human(Player):
                 continue
 
     def displayValidMoves(self, valid_moves):
-        print("0. Surrender")
+        print("0) Surrender")
         for i, move in enumerate(valid_moves, 1):
             x1, y1, x2, y2, capture_x, capture_y = move
 
             # Enumeration
-            print(i, '.', sep='', end=' ')
+            print(i, ')', sep='', end=' ')
 
             # Coords
-            print(x1, y1, end=", ")
-            print(x2, y2, end='')
+            print('(', x1, ' ', y1, ')', sep='', end=" -> ")
+            print('(', x2, ' ', y2, ')', sep='', end='')
 
             # Capture
             if capture_x is not None:
