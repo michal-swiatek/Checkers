@@ -1,6 +1,7 @@
 import Board
 import Pieces
 import Players
+import copy
 
 
 class Game:
@@ -12,7 +13,7 @@ class Game:
         self.board = Board.Board()
 
         self.white_player = Players.Human(Pieces.Piece.WHITE)
-        self.black_player = Players.Human(Pieces.Piece.BLACK)
+        self.black_player = Players.MinMaxBot(Pieces.Piece.BLACK)
 
         self.current_player = Pieces.Piece.WHITE
 
@@ -25,7 +26,11 @@ class Game:
             if self.current_player == Pieces.Piece.WHITE:
                 next_move = self.white_player.pass_control(self.board, self.capturing_piece)
             else:
-                next_move = self.black_player.pass_control(self.board, self.capturing_piece)
+                next_move = self.black_player.pass_control(copy.deepcopy(self.board), self.capturing_piece)
+                print("Optimal move value:  ", next_move)
+                self.current_player = not self.current_player
+                input("Continue?")
+                continue
 
             if next_move == "surrender":
                 if self.current_player == Pieces.Piece.WHITE:

@@ -1,4 +1,6 @@
 import Pieces
+import heuristics
+import copy
 
 
 class Player:
@@ -81,5 +83,92 @@ class Human(Player):
 class MinMaxBot(Player):
     """Bot using MinMax algorithm with alpha-beta pruning"""
 
+    def checkPossibleCaptures_MinMax(self, boardstate, piece):
+        board_bitmap = boardstate.generateBitmap()
+        moves, captures = piece.generateValidMoves(board_bitmap, True)
+
+        if len(captures) != 0:
+            return piece
+        else:
+            return None
+
+
+    def capturePiece_MinMax(self, boardstate, piece_x, piece_y, current_player):
+        pieces = boardstate.getPieces(not current_player)
+
+        for i, piece in enumerate(pieces):
+            if piece_x == piece.x and piece_y == piece.y:
+                pieces[i].captured = True
+
+    def updateBoard_MinMax(self, boardstate, move, current_player):
+        x1, y1, x2, y2, capture_x, capture_y = move
+        pieces = boardstate.getPieces(current_player)
+
+        for i, piece in enumerate(pieces):
+            if x1 == piece.x and y1 == piece.y:
+                # Promote piece
+                if (piece.white and y2 == 7) or (not piece.white and y2 == 0):
+                    pieces[i] = Pieces.King(piece.white, piece.x, piece.y)
+
+                # Move piece to new position
+                pieces[i].x = x2
+                pieces[i].y = y2
+
+                # Capture occurred
+                if capture_x is not None:
+                    self.capturePiece_MinMax(boardstate, capture_x, capture_y, current_player)
+
+                    # Chain capture condition
+                    if self.checkPossibleCaptures_MinMax(boardstate, pieces[i]):
+                        return pieces[i]
+                    else:
+                        boardstate.clear_captured()
+                        return None
+
+                break
+
+
+    def MinMax(self, boardstate, depth, alpha, beta, current_player, capturing_piece):
+        if (depth == 0):
+            return heuristics.h1(boardstate)
+        moves = self.getValidMoves(boardstate, capturing_piece, current_player)
+        if (len(moves) == 0 and capturing_piece == None):
+            return heuristics.h1(boardstate)
+        if (current_player != self.color):
+            for i, move in enumerate(moves, 1):
+                backup = copy.deepcopy(boardstate)
+                capturing_piece = self.updateBoard_MinMax(boardstate, move, current_player)
+                if (not(capturing_piece is None)):
+                    beta = min(beta, self.MinMax(boardstate, depth, alpha, beta, current_player, capturing_piece))      #for purposes of multi-capture
+                    boardstate = copy.deepcopy(backup)
+                else:
+                    beta = min(beta, self.MinMax(boardstate, depth-1, alpha, beta, (not current_player), None))
+                    boardstate = copy.deepcopy(backup)
+                    if (alpha >= beta):
+                        break
+            return beta
+        elif (current_player == self.color):
+            for i, move in enumerate(moves, 1):
+                backup = copy.deepcopy(boardstate)
+                capturing_piece = self.updateBoard_MinMax(boardstate, move, current_player)
+                if (not(capturing_piece is None)):
+                    alpha = max(alpha, self.MinMax(boardstate, depth, alpha, beta, current_player, capturing_piece))      #for purposes of multi-capture
+                    boardstate = copy.deepcopy(backup)
+                else:
+                    alpha = max(alpha, self.MinMax(boardstate, depth-1, alpha, beta, (not current_player), None))
+                    boardstate = copy.deepcopy(backup)
+                    if (alpha >= beta):
+                        break
+            return alpha
+
+
+
+
+
+
     def pass_control(self, board_state, capturing_piece):
-        pass        #TO DO LATER
+        if (len(self.getValidMoves(board_state, None, self.color)) == 0):
+            return "game over"
+        optimal_value = self.MinMax(board_state, 4, -100, 100, self.color, None)            #depth control here for now
+        print ("MinMax has finished searching")
+        return optimal_value
