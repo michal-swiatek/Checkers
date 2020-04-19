@@ -4,8 +4,18 @@ from Pieces import Piece, Man
 
 
 class Board:
-    """Prepares and stores the board state."""
+    """
+        Represents current board state
+
+        Board holds all currently active pieces and generates representation
+        of current game state
+    """
+
     def __init__(self):
+        """
+            Initializes board with predefined set of pieces
+        """
+
         self.white_pieces = []
         self.black_pieces = []
 
@@ -22,13 +32,24 @@ class Board:
                     self.black_pieces.append(Man(Piece.BLACK, x, y))
 
     def getPieces(self, color):
+        """ Returns list of pieces of specified color """
+
         if color == Piece.WHITE:
             return self.white_pieces
         else:
             return self.black_pieces
 
     def generateBitmap(self):
-        """Creates board bitmap"""
+        """
+            Generates bitmap representation of current board state
+
+            Bitmap consists of True/False values representing
+            WHITE and BLACK pieces as well as None values that
+            represent empty tile
+
+        :return: 8x8 matrix
+        """
+
         bitmap = [[None for columns in range(8)] for rows in range(8)]
 
         for white_piece, black_piece in itertools.zip_longest(self.white_pieces, self.black_pieces):
@@ -47,7 +68,15 @@ class Board:
         return bitmap
 
     def generateBoardState(self):
-        """Generates board state as 8x8 matrix"""
+        """
+            Generates current board representation that holds all board info
+
+            Builds an 8x8 grid holding pieces at their positions and None
+            values representing empty tiles
+
+        :return: 8x8 matrix
+        """
+
         grid = [[None for i in range(8)] for i in range(8)]
 
         for white_piece, black_piece in itertools.zip_longest(self.white_pieces, self.black_pieces):
@@ -60,7 +89,7 @@ class Board:
         return grid
 
     def display(self):
-        """Draws the board"""
+        """ Draws the board in console """
 
         grid = self.generateBoardState()
 
@@ -85,8 +114,8 @@ class Board:
             r = r - 1
         print("\n", "  ###################", "\n", "    0 1 2 3 4 5 6 7")
 
-    def clear_captured(self):
-        """Removes captured pieces from the board"""
+    def clearCaptured(self):
+        """ Removes captured pieces from the board """
 
         for i in range(len(self.white_pieces) - 1, -1, -1):
             if self.white_pieces[i].captured:

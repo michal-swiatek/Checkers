@@ -4,13 +4,46 @@ import copy
 
 
 class Player:
+    """
+        Represents one of two players who can be a Human or Bot
+
+        Player holds a color of his pieces that are held by Game instance
+    """
+
     def __init__(self, color):
+        """
+        :param color: color of Player pieces
+        """
         self.color = color
 
     def pass_control(self, board, capturing_piece):
+        """
+            Passes control in order for Player to make next move
+
+            Move is formatted as 6 values:
+            source_x, source_y, destination_x, destination_y, capture_x, capture_y
+
+            Source coords represent piece on a board that is chosen for move
+            Destination coords represent new position on the board of chosen piece
+            Capture coords if specified represent position of captured piece and are
+            set None if no capture occurred during that move
+
+        :param board: current board state
+        :param capturing_piece: piece performing chain capture
+        :return: move formatted as 6 numbers tuple
+        """
         pass
 
     def getValidMoves(self, board, capturing_piece, color):
+        """
+            Generates all valid moves for all pieces of specified color
+
+        :param board: current board state
+        :param capturing_piece: piece performing chain capture
+        :param color: specifies for which pieces moves should be generated
+        :return: list of valid moves
+        """
+
         pieces = board.getPieces(color)
         if capturing_piece is not None:
             pieces = [capturing_piece]
@@ -33,9 +66,14 @@ class Player:
 
 
 class Human(Player):
-    """Human player"""
+    """ Human player """
 
     def pass_control(self, board, capturing_piece):
+        """
+            Human player gets prompts informing about current game state
+            and is asked to choose a move from list of valid moves
+        """
+
         valid_moves = self.getValidMoves(board, capturing_piece, self.color)
 
         if len(valid_moves) == 0:
@@ -75,7 +113,7 @@ class Human(Player):
 
             # Capture
             if capture_x is not None:
-                print(", Capturing:", capture_x, capture_y)
+                print(", Capturing: ", '(', capture_x, ' ', capture_y, ')', sep='')
             else:
                 print()  # New line
 
@@ -122,7 +160,7 @@ class MinMaxBot(Player):
                     if self.checkPossibleCaptures_MinMax(boardstate, pieces[i]):
                         return pieces[i]
                     else:
-                        boardstate.clear_captured()
+                        boardstate.clearCaptured()
                         return None
 
                 break

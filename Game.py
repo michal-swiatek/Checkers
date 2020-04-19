@@ -5,12 +5,18 @@ import copy
 
 
 class Game:
-    """ Game instance """
+    """
+        Represent single game instance
+
+        Holds game info as current board state, currently capturing piece
+        and implements game logic such as move validation and performing,
+        control flow, surrender/game over.
+    """
 
     def __init__(self):
         self.running = True
 
-        self.board = Board.Board()
+        self.board = Board.Board()  # current game state
 
         self.white_player = Players.Human(Pieces.Piece.WHITE)
         self.black_player = Players.MinMaxBot(Pieces.Piece.BLACK)
@@ -20,9 +26,8 @@ class Game:
         self.capturing_piece = None
 
     def mainLoop(self):
-        """ Game loop """
-
         while self.running:
+            # Get next move from player
             if self.current_player == Pieces.Piece.WHITE:
                 next_move = self.white_player.pass_control(self.board, self.capturing_piece)
             else:
@@ -32,6 +37,7 @@ class Game:
                 input("Continue?")
                 continue
 
+            # Check whether it is a valid surrender or game over
             if next_move == "surrender":
                 if self.current_player == Pieces.Piece.WHITE:
                     print("Black player wins! (White surrendered)")
@@ -47,12 +53,21 @@ class Game:
 
                 self.running = False
             else:
+                # If move is valid perform it
                 self.updateBoard(next_move)
 
+                # Pass control to other player only if no more chained capture are possible
                 if self.capturing_piece is None:
                     self.current_player = not self.current_player
 
     def updateBoard(self, move):
+        """
+            Updates board state by performing specified move
+
+        :param move: move formatted as tuple containing 6 integers
+        :return: None
+        """
+
         x1, y1, x2, y2, capture_x, capture_y = move
         pieces = self.board.getPieces(self.current_player)
 
@@ -72,14 +87,16 @@ class Game:
 
                     # Chain capture condition
                     if self.checkPossibleCaptures(pieces[i]):
-                        self.capturing_piece = pieces[i]
+                        self.capturing_piece = pieces[i]  # set currently capturing piece
                     else:
-                        self.capturing_piece = None
-                        self.board.clear_captured()
+                        self.capturing_piece = None  # reset currently capturing piece
+                        self.board.clearCaptured()   # clear all captured pieces
 
                 break
 
     def capturePiece(self, piece_x, piece_y):
+        """ Marks specified piece as captured, board is then responsible for removing that piece """
+
         pieces = self.board.getPieces(not self.current_player)
 
         for i, piece in enumerate(pieces):
@@ -91,6 +108,6 @@ class Game:
         moves, captures = piece.generateValidMoves(board_bitmap, True)
 
         if len(captures) != 0:
-            return piece
+            return True
         else:
-            return None
+            return False
