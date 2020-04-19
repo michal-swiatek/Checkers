@@ -128,7 +128,8 @@ class MinMaxBot(Player):
         self.heuristic = func_h
         self.possible_moves = []
         self.move_values = []
-        self.depth = 6
+        self.depth = 9
+        self.explored = {}
 
     def checkPossibleCaptures_MinMax(self, boardstate, piece):
         board_bitmap = boardstate.generateBitmap()
@@ -176,11 +177,17 @@ class MinMaxBot(Player):
 
 
     def MinMax(self, boardstate, depth, alpha, beta, current_player, capturing_piece):
+        if (self.depth - depth < 5):
+            if (boardstate, current_player) in self.explored:
+                return self.explored[(boardstate, depth)]
         if (depth == 0):
             return self.heuristic(boardstate)
         moves = self.getValidMoves(boardstate, capturing_piece, current_player)
         if (len(moves) == 0 and capturing_piece == None):
-            return self.heuristic(boardstate)
+            val = self.heuristic(boardstate)
+            if (self.depth - depth < 5):
+                self.explored[(boardstate, depth)] = val
+            return val
         if (current_player != self.color):
             for i, move in enumerate(moves, 1):
                 backup = copy.deepcopy(boardstate)
@@ -193,6 +200,8 @@ class MinMaxBot(Player):
                     boardstate = copy.deepcopy(backup)
                     if (alpha >= beta):
                         break
+            if (self.depth - depth < 5):
+                self.explored[(boardstate, depth)] = beta
             return beta
         elif (current_player == self.color):
             for i, move in enumerate(moves, 1):
@@ -208,6 +217,8 @@ class MinMaxBot(Player):
                     boardstate = copy.deepcopy(backup)
                     if (alpha >= beta):
                         break
+            if (self.depth - depth < 5):
+                self.explored[(boardstate, depth)] = alpha
             return alpha
 
 
@@ -216,10 +227,12 @@ class MinMaxBot(Player):
 
 
     def pass_control(self, board_state, capturing_piece):
+        board_state.display()
         if (len(self.getValidMoves(board_state, None, self.color)) == 0):
             return "game over"
         self.possible_moves = self.getValidMoves(board_state, capturing_piece, self.color)
         self.move_values = []
+        self.explored.clear()
         optimal_value = self.MinMax(board_state, self.depth, -10000, 10000, self.color, None)            #depth control here for now
 
         g = 0

@@ -44,9 +44,11 @@ class Game:
                 self.running = False
             elif next_move == Players.Player.GAME_OVER:
                 if self.current_player == Pieces.Piece.WHITE:
-                    print("Black player wins!")
+                    print("\nBlack player wins!\n")
+                    self.board.display()
                 else:
-                    print("White player wins!")
+                    print("\nWhite player wins!\n")
+                    self.board.display()
 
                 self.running = False
             else:
