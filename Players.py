@@ -1,5 +1,4 @@
 import Pieces
-import heuristics
 import copy
 
 
@@ -124,6 +123,10 @@ class Human(Player):
 class MinMaxBot(Player):
     """Bot using MinMax algorithm with alpha-beta pruning"""
 
+    def __init__(self, color, func_h):
+        super().__init__(color)
+        self.heuristic = func_h
+
     def checkPossibleCaptures_MinMax(self, boardstate, piece):
         board_bitmap = boardstate.generateBitmap()
         moves, captures = piece.generateValidMoves(board_bitmap, True)
@@ -171,10 +174,10 @@ class MinMaxBot(Player):
 
     def MinMax(self, boardstate, depth, alpha, beta, current_player, capturing_piece):
         if (depth == 0):
-            return heuristics.h1(boardstate)
+            return self.heuristic(boardstate)
         moves = self.getValidMoves(boardstate, capturing_piece, current_player)
         if (len(moves) == 0 and capturing_piece == None):
-            return heuristics.h1(boardstate)
+            return self.heuristic(boardstate)
         if (current_player != self.color):
             for i, move in enumerate(moves, 1):
                 backup = copy.deepcopy(boardstate)
