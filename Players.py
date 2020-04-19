@@ -126,6 +126,9 @@ class MinMaxBot(Player):
     def __init__(self, color, func_h):
         super().__init__(color)
         self.heuristic = func_h
+        self.possible_moves = []
+        self.move_values = []
+        self.depth = 6
 
     def checkPossibleCaptures_MinMax(self, boardstate, piece):
         board_bitmap = boardstate.generateBitmap()
@@ -200,6 +203,8 @@ class MinMaxBot(Player):
                     boardstate = copy.deepcopy(backup)
                 else:
                     alpha = max(alpha, self.MinMax(boardstate, depth-1, alpha, beta, (not current_player), None))
+                    if (self.depth == depth):
+                        self.move_values.append(alpha)
                     boardstate = copy.deepcopy(backup)
                     if (alpha >= beta):
                         break
@@ -213,6 +218,13 @@ class MinMaxBot(Player):
     def pass_control(self, board_state, capturing_piece):
         if (len(self.getValidMoves(board_state, None, self.color)) == 0):
             return "game over"
-        optimal_value = self.MinMax(board_state, 9, -100, 100, self.color, None)            #depth control here for now
-        print ("MinMax has finished searching")
-        return optimal_value
+        self.possible_moves = self.getValidMoves(board_state, capturing_piece, self.color)
+        self.move_values = []
+        optimal_value = self.MinMax(board_state, self.depth, -10000, 10000, self.color, None)            #depth control here for now
+
+        g = 0
+        while (g < len(self.possible_moves)):
+            if (optimal_value == self.move_values[g]):
+                return self.possible_moves[g]
+            g = g + 1
+        return "Error"
