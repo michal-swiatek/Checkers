@@ -1,5 +1,10 @@
 class Piece:
-    """Base piece class"""
+    """
+        Base piece class
+
+        Holds piece color, position on the board and information
+        whether the piece is captured
+    """
 
     WHITE: bool = True
     BLACK: bool = False
@@ -12,20 +17,39 @@ class Piece:
 
         self.captured = False
 
-    def __eq__(self, other):
-        return self.x == other.x and self.y == other.y
-
     def generateValidMoves(self, board_bitmap):
+        """
+            Generates a list of possible moves given a specific board bitmap
+
+            All moves generated are valid and obey game rules
+
+        :param board_bitmap: current board state represented as bitmap
+        :return: list of valid moves
+        """
         pass
 
     def displayCharacter(self):
+        """
+            Defines printable character of a piece
+
+        :return: character
+        """
         pass
 
 
 class Man(Piece):
-    """Standard piece"""
+    """
+        Standard checkers piece
+
+        Man can move only forward, when end of the board is reached Man
+        gets promoted and becomes a King
+        Man can capture adjacent enemy pieces in any of four directions
+        if a tile directly behind them is empty
+    """
 
     def generateValidMoves(self, bitmap: [[bool]], only_captures: bool = False) -> ([()], [()]):
+        """ Generates Man valid moves """
+
         moves = []
         captures = []
 
@@ -44,6 +68,21 @@ class Man(Piece):
             return moves, []
 
     def checkDirection(self, bitmap, moves, captures, only_captures: bool, dir_x: int, dir_y: int):
+        """
+            Helper function that checks all possible moves in specific direction
+
+            If captures have been detected only_capture flag is set True and normal
+            moves are ignored - Player has to capture enemy piece if possible
+
+        :param bitmap: current board bitmap representation
+        :param moves: reference to list of possible moves
+        :param captures: reference to lis of possible captures
+        :param only_captures: flag specifying whether normal moves should be accounted
+        :param dir_x: x direction of movement
+        :param dir_y: y direction of movement
+        :return: None
+        """
+
         x = self.x + 2 * dir_x
         y = self.y + 2 * dir_y
         dimensions = len(bitmap)
@@ -66,6 +105,8 @@ class Man(Piece):
             moves.append((self.x, self.y, x, y, None, None))
 
     def displayCharacter(self):
+        """ Lower case letter represent Man """
+
         if self.white:
             return 'w'
         else:
@@ -73,9 +114,18 @@ class Man(Piece):
 
 
 class King(Man):
-    """Promoted piece"""
+    """
+        Promoted piece
+
+        King can move any number of tiles in any of four directions and can
+        capture pieces that are not adjacent to it. After capture it can land
+        on any empty tile as long as there is no other pieces between captured
+        piece and destination tile
+    """
 
     def checkDirection(self, bitmap, moves, captures, only_captures: bool, dir_x: int, dir_y: int) -> None:
+        """ King implementation of move generation """
+
         x = self.x + dir_x
         y = self.y + dir_y
         dimensions = len(bitmap)
@@ -100,6 +150,8 @@ class King(Man):
             y += dir_y
 
     def displayCharacter(self):
+        """ Upper case letter represent King """
+
         if self.white:
             return 'W'
         else:
