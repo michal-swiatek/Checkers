@@ -38,14 +38,14 @@ class Game:
                 continue
 
             # Check whether it is a valid surrender or game over
-            if next_move == "surrender":
+            if next_move == Players.Player.SURRENDER:
                 if self.current_player == Pieces.Piece.WHITE:
                     print("Black player wins! (White surrendered)")
                 else:
                     print("White player wins! (Black surrendered)")
 
                 self.running = False
-            elif next_move == "game over":
+            elif next_move == Players.Player.GAME_OVER:
                 if self.current_player == Pieces.Piece.WHITE:
                     print("Black player wins!")
                 else:

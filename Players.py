@@ -10,6 +10,9 @@ class Player:
         Player holds a color of his pieces that are held by Game instance
     """
 
+    SURRENDER: str = "surrender"
+    GAME_OVER: str = "game over"
+
     def __init__(self, color):
         """
         :param color: color of Player pieces
@@ -77,7 +80,7 @@ class Human(Player):
         valid_moves = self.getValidMoves(board, capturing_piece, self.color)
 
         if len(valid_moves) == 0:
-            return "game over"
+            return Player.GAME_OVER
 
         while True:
             board.display()
@@ -92,8 +95,8 @@ class Human(Player):
             user_input = input("Enter move: ")
             try:
                 index = int(user_input)
-                if index == 0:
-                    return "surrender"
+                if index == 0:  # 0 index represent surrender
+                    return Player.SURRENDER
                 else:
                     return valid_moves[index - 1]
             except (ValueError, IndexError):
