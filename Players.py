@@ -169,6 +169,6 @@ class MinMaxBot(Player):
     def pass_control(self, board_state, capturing_piece):
         if (len(self.getValidMoves(board_state, None, self.color)) == 0):
             return "game over"
-        optimal_value = self.MinMax(board_state, 4, -100, 100, self.color, None)            #depth control here for now
+        optimal_value = self.MinMax(board_state, 10, -100, 100, self.color, None)            #depth control here for now
         print ("MinMax has finished searching")
         return optimal_value
