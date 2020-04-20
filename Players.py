@@ -128,7 +128,7 @@ class MinMaxBot(Player):
         self.heuristic = func_h
         self.possible_moves = []
         self.move_values = []
-        self.depth = 9
+        self.depth = 6
         self.explored = {}
 
     def checkPossibleCaptures_MinMax(self, boardstate, piece):
