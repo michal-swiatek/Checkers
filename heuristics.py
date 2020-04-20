@@ -17,6 +17,10 @@ def h1(board_state):
     return h
 
 
+def h1_white(board_state):
+    return -1 * h1(board_state)
+
+
 def h2(board_state):
     """
         Heuristics counting all possible moves of a player as well as
@@ -83,47 +87,4 @@ def h2(board_state):
 
 
 def h2_white(board_state):
-    """ Same as h2, returns   score * (-1) """
-
-    STATIC_POINTS = 2
-
-    white_pieces = board_state.getPieces(Piece.WHITE)
-    black_pieces = board_state.getPieces(Piece.BLACK)
-
-    board_bitmap = board_state.generateBitmap()
-
-    score = 0
-
-    valid_moves, valid_captures = [], []
-    for piece in white_pieces:
-        moves, captures = piece.generateValidMoves(board_bitmap, len(valid_captures) != 0)
-
-        if len(captures) > 0:
-            valid_captures.extend(captures)
-        else:
-            valid_moves.extend(moves)
-
-        score -= piece.y + STATIC_POINTS
-
-    if len(valid_captures) > 0:
-        valid_moves = valid_captures
-
-    score -= len(valid_moves)
-
-    valid_moves, valid_captures = [], []
-    for piece in black_pieces:
-        moves, captures = piece.generateValidMoves(board_bitmap, len(valid_captures) != 0)
-
-        if len(captures) > 0:
-            valid_captures.extend(captures)
-        else:
-            valid_moves.extend(moves)
-
-        score += (7 - piece.y) + STATIC_POINTS  # Black pieces move in opposite direction
-
-    if len(valid_captures) > 0:
-        valid_moves = valid_captures
-
-    score += len(valid_moves)
-
-    return (-1)*score
+    return -1 * h2(board_state)
