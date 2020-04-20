@@ -180,7 +180,7 @@ class MinMaxBot(Player):
 
     def MinMax(self, boardstate, depth, alpha, beta, current_player, capturing_piece, origin):
         if (self.depth - depth < 5):
-            if (boardstate, current_player) in self.explored:
+            if (boardstate, depth) in self.explored:
                 return self.explored[(boardstate, depth)]
         if (depth == 0):
             if boardstate in self.evaluated:
