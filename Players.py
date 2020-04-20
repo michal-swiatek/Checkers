@@ -233,11 +233,7 @@ class MinMaxBot(Player):
 
 
     def pass_control(self, board_state, capturing_piece):
-        #    Debug Code
-        #print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-        #print("Before move")
         board_state.display()
-        #print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
         if (len(self.getValidMoves(board_state, None, self.color)) == 0):
             return "game over"
         self.possible_moves = []

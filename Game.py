@@ -60,12 +60,6 @@ class Game:
                 if self.capturing_piece is None:
                     self.current_player = not self.current_player
 
-            #   Debug Code
-            #print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-            #print("After move")
-            #self.board.display()
-            #print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-
     def updateBoard(self, move):
         """
             Updates board state by performing specified move
