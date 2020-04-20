@@ -131,7 +131,6 @@ class MinMaxBot(Player):
         self.depth = depth
 
         self.explored = {}
-        self.evaluated = {}
 
     def checkPossibleCaptures_MinMax(self, boardstate, piece):
         board_bitmap = boardstate.generateBitmap()
@@ -183,11 +182,7 @@ class MinMaxBot(Player):
             if (boardstate, depth) in self.explored:
                 return self.explored[(boardstate, depth)]
         if (depth == 0):
-            if boardstate in self.evaluated:
-                return self.evaluated[boardstate]
-            else:
-                self.evaluated[boardstate] = self.heuristic(boardstate)
-                return self.evaluated[boardstate]
+            return self.heuristic(boardstate)
         moves = self.getValidMoves(boardstate, capturing_piece, current_player)
         if (len(moves) == 0 and capturing_piece == None):
             val = self.heuristic(boardstate)

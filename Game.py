@@ -46,31 +46,14 @@ class Game:
                 next_move = self.black_player.pass_control(copy.deepcopy(self.board), self.capturing_piece)
 
             # Draw precalculation
-            x1, y1, x2, y2, capture_x, capture_y = next_move
-            if capture_x is not None:
-                self.last_capture = self.move_counter
+            # <removed>
 
-            grid = self.board.generateBoardState()
-            piece_character = grid[x1][y1].displayCharacter()
-
-            if piece_character == 'w' or piece_character == 'b':
-                self.last_man_move = self.move_counter
 
             # Draw condition
             last_capture = self.move_counter - self.last_capture
             last_man_move = self.move_counter - self.last_man_move
-            if last_capture > Game.MAX_LAST_CAPTURE and last_man_move > Game.MAX_LAST_CAPTURE:
-                print("Draw!")
-                self.running = False
-            # Check whether it is a valid surrender or game over
-            elif next_move == Players.Player.SURRENDER:
-                if self.current_player == Pieces.Piece.WHITE:
-                    print("Black player wins! (White surrendered)")
-                else:
-                    print("White player wins! (Black surrendered)")
 
-                self.running = False
-            elif next_move == Players.Player.GAME_OVER:
+            if (next_move == Players.Player.GAME_OVER):
                 if self.current_player == Pieces.Piece.WHITE:
                     print("\nBlack player wins!\n")
                     self.board.display()
@@ -79,8 +62,32 @@ class Game:
                     self.board.display()
 
                 self.running = False
+            elif next_move == Players.Player.SURRENDER:
+                if self.current_player == Pieces.Piece.WHITE:
+                    print("Black player wins! (White surrendered)")
+                else:
+                    print("White player wins! (Black surrendered)")
+
+                self.running = False
+            elif last_capture > Game.MAX_LAST_CAPTURE and last_man_move > Game.MAX_LAST_CAPTURE:
+                print("Draw!")
+                self.running = False
+            # Check whether it is a valid surrender or game over
             else:
-                # If move is valid perform it
+                # If move is valid perform it (and update counters, if necessary)
+
+                x1, y1, x2, y2, capture_x, capture_y = next_move
+                if capture_x is not None:
+                    self.last_capture = self.move_counter
+
+                grid = self.board.generateBoardState()
+                piece_character = grid[x1][y1].displayCharacter()
+
+                if piece_character == 'w' or piece_character == 'b':
+                    self.last_man_move = self.move_counter
+
+
+
                 self.updateBoard(next_move)
 
                 # Pass control to other player only if no more chained capture are possible
