@@ -148,7 +148,7 @@ class Game:
                 self.white_player = Players.Human(Pieces.Piece.WHITE)
                 self.black_player = Players.MinMaxBot(Pieces.Piece.BLACK, depth, heuristics.h2)
             elif choice == 2:
-                self.white_player = Players.MinMaxBot(Pieces.Piece.WHITE, depth, heuristics.h2)
+                self.white_player = Players.MinMaxBot(Pieces.Piece.WHITE, depth, heuristics.h2_white)
                 self.black_player = Players.MinMaxBot(Pieces.Piece.BLACK, depth, heuristics.h1)
 
             break
