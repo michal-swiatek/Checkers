@@ -178,7 +178,7 @@ class MinMaxBot(Player):
                 break
 
 
-    def MinMax(self, boardstate, depth, alpha, beta, current_player, capturing_piece):
+    def MinMax(self, boardstate, depth, alpha, beta, current_player, capturing_piece, origin):
         if (self.depth - depth < 5):
             if (boardstate, current_player) in self.explored:
                 return self.explored[(boardstate, depth)]
@@ -199,10 +199,10 @@ class MinMaxBot(Player):
                 backup = copy.deepcopy(boardstate)
                 capturing_piece = self.updateBoard_MinMax(boardstate, move, current_player)
                 if (not(capturing_piece is None)):
-                    beta = min(beta, self.MinMax(boardstate, depth, alpha, beta, current_player, capturing_piece))      #for purposes of multi-capture
+                    beta = min(beta, self.MinMax(boardstate, depth, alpha, beta, current_player, capturing_piece, False))      #for purposes of multi-capture
                     boardstate = copy.deepcopy(backup)
                 else:
-                    beta = min(beta, self.MinMax(boardstate, depth-1, alpha, beta, (not current_player), None))
+                    beta = min(beta, self.MinMax(boardstate, depth-1, alpha, beta, (not current_player), None, False))
                     boardstate = copy.deepcopy(backup)
                     if (alpha >= beta):
                         break
@@ -214,15 +214,15 @@ class MinMaxBot(Player):
                 backup = copy.deepcopy(boardstate)
                 capturing_piece = self.updateBoard_MinMax(boardstate, move, current_player)
                 if (not(capturing_piece is None)):
-                    alpha = max(alpha, self.MinMax(boardstate, depth, alpha, beta, current_player, capturing_piece))      #for purposes of multi-capture
+                    alpha = max(alpha, self.MinMax(boardstate, depth, alpha, beta, current_player, capturing_piece, False))      #for purposes of multi-capture
                     boardstate = copy.deepcopy(backup)
                 else:
-                    alpha = max(alpha, self.MinMax(boardstate, depth-1, alpha, beta, (not current_player), None))
-                    if (self.depth == depth):
-                        self.move_values.append(alpha)
+                    alpha = max(alpha, self.MinMax(boardstate, depth-1, alpha, beta, (not current_player), None, False))
                     boardstate = copy.deepcopy(backup)
                     if (alpha >= beta):
                         break
+                if (origin):
+                    self.move_values.append(alpha)
             if (self.depth - depth < 5):
                 self.explored[(boardstate, depth)] = alpha
             return alpha
@@ -244,15 +244,11 @@ class MinMaxBot(Player):
         self.possible_moves = self.getValidMoves(board_state, capturing_piece, self.color)
         self.move_values = []
         self.explored.clear()
-        optimal_value = self.MinMax(board_state, self.depth, -10000, 10000, self.color, None)            #depth control here for now
-        print("              -----   ", optimal_value)
-
+        optimal_value = self.MinMax(board_state, self.depth, -10000, 10000, self.color, None, True)            #depth control here for now
         g = 0
-        print ("---  ", self.possible_moves)
-        print ("-    ", optimal_value)
         while (g < len(self.possible_moves)):
             if (optimal_value == self.move_values[g]):
-                print ("         ---  ", self.move_values[g])
                 return self.possible_moves[g]
             g = g + 1
+
         return "Error"
