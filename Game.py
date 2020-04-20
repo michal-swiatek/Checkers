@@ -1,7 +1,8 @@
+import copy
+
 import Board
 import Pieces
 import Players
-import copy
 import heuristics
 
 
@@ -13,6 +14,8 @@ class Game:
         and implements game logic such as move validation and performing,
         control flow, surrender/game over.
     """
+
+    MAX_LAST_CAPTURE: int = 10
 
     def __init__(self):
         self.running = True
@@ -27,16 +30,40 @@ class Game:
 
         self.capturing_piece = None
 
+        self.move_counter = 0
+
+        self.last_capture = 0
+        self.last_man_move = 0
+
     def mainLoop(self):
         while self.running:
+            print("Turn:", self.move_counter)
+
             # Get next move from player
             if self.current_player == Pieces.Piece.WHITE:
                 next_move = self.white_player.pass_control(copy.deepcopy(self.board), self.capturing_piece)
             else:
                 next_move = self.black_player.pass_control(copy.deepcopy(self.board), self.capturing_piece)
 
+            # Draw precalculation
+            x1, y1, x2, y2, capture_x, capture_y = next_move
+            if capture_x is not None:
+                self.last_capture = self.move_counter
+
+            grid = self.board.generateBoardState()
+            piece_character = grid[x1][y1].displayCharacter()
+
+            if piece_character == 'w' or piece_character == 'b':
+                self.last_man_move = self.move_counter
+
+            # Draw condition
+            last_capture = self.move_counter - self.last_capture
+            last_man_move = self.move_counter - self.last_man_move
+            if last_capture > Game.MAX_LAST_CAPTURE and last_man_move > Game.MAX_LAST_CAPTURE:
+                print("Draw!")
+                self.running = False
             # Check whether it is a valid surrender or game over
-            if next_move == Players.Player.SURRENDER:
+            elif next_move == Players.Player.SURRENDER:
                 if self.current_player == Pieces.Piece.WHITE:
                     print("Black player wins! (White surrendered)")
                 else:
@@ -59,6 +86,8 @@ class Game:
                 # Pass control to other player only if no more chained capture are possible
                 if self.capturing_piece is None:
                     self.current_player = not self.current_player
+
+            self.move_counter += 1
 
     def updateBoard(self, move):
         """
