@@ -152,9 +152,9 @@ class Game:
         while True:
             print("0. Human vs Bot (heuristic 1)")
             print("1. Human vs Bot (heuristic 2)")
-            print("2. Human vs Bot (heuristic 1 vs 2)")
-            print("3. Human vs Bot (heuristic 1 vs 1)")
-            print("4. Human vs Bot (heuristic 2 vs 2)")
+            print("2. Bot vs Bot (heuristic 1 vs 2)")
+            print("3. Bot vs Bot (heuristic 1 vs 1)")
+            print("4. Bot vs Bot (heuristic 2 vs 2)")
 
             choice = input("Enter choice: ")
             depth = input("Enter search depth: ")
