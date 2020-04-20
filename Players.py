@@ -240,14 +240,19 @@ class MinMaxBot(Player):
         #print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
         if (len(self.getValidMoves(board_state, None, self.color)) == 0):
             return "game over"
+        self.possible_moves = []
         self.possible_moves = self.getValidMoves(board_state, capturing_piece, self.color)
         self.move_values = []
         self.explored.clear()
         optimal_value = self.MinMax(board_state, self.depth, -10000, 10000, self.color, None)            #depth control here for now
+        print("              -----   ", optimal_value)
 
         g = 0
+        print ("---  ", self.possible_moves)
+        print ("-    ", optimal_value)
         while (g < len(self.possible_moves)):
             if (optimal_value == self.move_values[g]):
+                print ("         ---  ", self.move_values[g])
                 return self.possible_moves[g]
             g = g + 1
         return "Error"
