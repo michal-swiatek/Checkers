@@ -244,7 +244,7 @@ class MinMaxBot(Player):
         self.possible_moves = self.getValidMoves(board_state, capturing_piece, self.color)
         self.move_values = []
         self.explored.clear()
-        optimal_value = self.MinMax(board_state, self.depth, -10000, 10000, self.color, None, True)            #depth control here for now
+        optimal_value = self.MinMax(board_state, self.depth, -10000, 10000, self.color, capturing_piece, True)            #depth control here for now
         g = 0
         while (g < len(self.possible_moves)):
             if (optimal_value == self.move_values[g]):
