@@ -38,26 +38,45 @@ def h2(board_state):
     :return: score as an integer
     """
 
+    STATIC_POINTS = 2
+
     white_pieces = board_state.getPieces(Piece.WHITE)
     black_pieces = board_state.getPieces(Piece.BLACK)
 
     board_bitmap = board_state.generateBitmap()
 
     score = 0
+
+    valid_moves, valid_captures = [], []
     for piece in white_pieces:
-        moves, captures = piece.generateValidMoves(board_bitmap)
+        moves, captures = piece.generateValidMoves(board_bitmap, len(valid_captures) != 0)
 
         if len(captures) > 0:
-            moves = captures
+            valid_captures.extend(captures)
+        else:
+            valid_moves.extend(moves)
 
-        score -= len(moves) + piece.y
+        score -= piece.y + STATIC_POINTS
 
+    if len(valid_captures) > 0:
+        valid_moves = valid_captures
+
+    score -= len(valid_moves)
+
+    valid_moves, valid_captures = [], []
     for piece in black_pieces:
-        moves, captures = piece.generateValidMoves(board_bitmap)
+        moves, captures = piece.generateValidMoves(board_bitmap, len(valid_captures) != 0)
 
         if len(captures) > 0:
-            moves = captures
+            valid_captures.extend(captures)
+        else:
+            valid_moves.extend(moves)
 
-        score += len(moves) + (7 - piece.y)  # Black pieces move in opposite direction
+        score += (7 - piece.y) + STATIC_POINTS  # Black pieces move in opposite direction
+
+    if len(valid_captures) > 0:
+        valid_moves = valid_captures
+
+    score += len(valid_moves)
 
     return score

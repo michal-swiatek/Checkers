@@ -123,13 +123,15 @@ class Human(Player):
 class MinMaxBot(Player):
     """Bot using MinMax algorithm with alpha-beta pruning"""
 
-    def __init__(self, color, func_h):
+    def __init__(self, color, depth, func_h):
         super().__init__(color)
         self.heuristic = func_h
         self.possible_moves = []
         self.move_values = []
-        self.depth = 6
+        self.depth = depth
+
         self.explored = {}
+        self.evaluated = {}
 
     def checkPossibleCaptures_MinMax(self, boardstate, piece):
         board_bitmap = boardstate.generateBitmap()
@@ -181,7 +183,11 @@ class MinMaxBot(Player):
             if (boardstate, current_player) in self.explored:
                 return self.explored[(boardstate, depth)]
         if (depth == 0):
-            return self.heuristic(boardstate)
+            if boardstate in self.evaluated:
+                return self.evaluated[boardstate]
+            else:
+                self.evaluated[boardstate] = self.heuristic(boardstate)
+                return self.evaluated[boardstate]
         moves = self.getValidMoves(boardstate, capturing_piece, current_player)
         if (len(moves) == 0 and capturing_piece == None):
             val = self.heuristic(boardstate)
@@ -227,7 +233,11 @@ class MinMaxBot(Player):
 
 
     def pass_control(self, board_state, capturing_piece):
+        #    Debug Code
+        #print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        #print("Before move")
         board_state.display()
+        #print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
         if (len(self.getValidMoves(board_state, None, self.color)) == 0):
             return "game over"
         self.possible_moves = self.getValidMoves(board_state, capturing_piece, self.color)
