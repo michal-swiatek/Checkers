@@ -19,8 +19,9 @@ class Game:
 
         self.board = Board.Board()  # current game state
 
-        self.white_player = Players.Human(Pieces.Piece.WHITE)
-        self.black_player = Players.MinMaxBot(Pieces.Piece.BLACK, heuristics.h1)
+        self.white_player = None
+        self.black_player = None
+        self.initPlayers()
 
         self.current_player = Pieces.Piece.WHITE
 
@@ -110,3 +111,38 @@ class Game:
             return True
         else:
             return False
+
+    def initPlayers(self):
+        while True:
+            print("0. Human vs Bot (heuristic 1)")
+            print("1. Human vs Bot (heuristic 2)")
+            print("2. Bot vs Bot (heuristic 2 vs 1)")
+
+            choice = input("Enter choice: ")
+            depth = input("Enter search depth: ")
+
+            try:
+                choice = int(choice)
+                depth = int(depth)
+
+                if choice < 0 or choice > 2:
+                    raise ValueError("Please enter choice in range 0-2")
+
+                if depth < 1:
+                    raise ValueError("Depth must be a positive integer")
+            except ValueError as e:
+                print(e)
+                print("Invalid input!")
+                continue
+
+            if choice == 0:
+                self.white_player = Players.Human(Pieces.Piece.WHITE)
+                self.black_player = Players.MinMaxBot(Pieces.Piece.BLACK, depth, heuristics.h1)
+            elif choice == 1:
+                self.white_player = Players.Human(Pieces.Piece.WHITE)
+                self.black_player = Players.MinMaxBot(Pieces.Piece.BLACK, depth, heuristics.h2)
+            elif choice == 2:
+                self.white_player = Players.MinMaxBot(Pieces.Piece.BLACK, depth, heuristics.h2)
+                self.black_player = Players.MinMaxBot(Pieces.Piece.BLACK, depth, heuristics.h1)
+
+            break
