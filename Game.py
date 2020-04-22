@@ -45,15 +45,11 @@ class Game:
             else:
                 next_move = self.black_player.pass_control(copy.deepcopy(self.board), self.capturing_piece)
 
-            # Draw precalculation
-            # <removed>
-
-
             # Draw condition
             last_capture = self.move_counter - self.last_capture
             last_man_move = self.move_counter - self.last_man_move
 
-            if (next_move == Players.Player.GAME_OVER):
+            if next_move == Players.Player.GAME_OVER:
                 if self.current_player == Pieces.Piece.WHITE:
                     print("\nBlack player wins!\n")
                     self.board.display()
@@ -85,8 +81,6 @@ class Game:
 
                 if piece_character == 'w' or piece_character == 'b':
                     self.last_man_move = self.move_counter
-
-
 
                 self.updateBoard(next_move)
 
