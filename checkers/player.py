@@ -165,10 +165,13 @@ class Minimax(SimpleAI):
         white_score = 0
         red_score = 0
 
-        for piece in white_pieces:
-            white_score += 2 * piece.getScore(white_bitmap) + (Board.DIMENSIONS - piece.grid_y) + Minimax.STATIC_POINTS
-        for piece in red_pieces:
-            red_score += 2 * piece.getScore(red_bitmap) + piece.grid_y + Minimax.STATIC_POINTS
+        #for piece in white_pieces:
+        #    white_score += 2 * piece.getScore(white_bitmap) + (Board.DIMENSIONS - piece.grid_y) + Minimax.STATIC_POINTS
+        #for piece in red_pieces:
+        #    red_score += 2 * piece.getScore(red_bitmap) + piece.grid_y + Minimax.STATIC_POINTS
+
+        white_score = len(white_pieces)
+        red_score = len(red_pieces)
 
         final_score = 0
         if self.color == Board.WHITE:
