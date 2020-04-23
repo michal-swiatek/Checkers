@@ -17,13 +17,14 @@ class Piece:
 
         self.captured = False
 
-    def generateValidMoves(self, board_bitmap):
+    def generateValidMoves(self, board_bitmap, only_captures: bool = False) -> ([()], [()]):
         """
             Generates a list of possible moves given a specific board bitmap
 
             All moves generated are valid and obey game rules
 
         :param board_bitmap: current board state represented as bitmap
+        :param only_captures: flag specifying to ignore normal moves
         :return: list of valid moves
         """
         pass
