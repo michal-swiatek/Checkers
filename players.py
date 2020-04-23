@@ -20,7 +20,7 @@ class Player:
         """
         self.color = color
 
-    def pass_control(self, board, capturing_piece):
+    def passControl(self, board, capturing_piece):
         """
             Passes control in order for Player to make next move
 
@@ -72,7 +72,7 @@ class Player:
 class Human(Player):
     """ Human player """
 
-    def pass_control(self, board, capturing_piece):
+    def passControl(self, board, capturing_piece):
         """
             Human player gets prompts informing about current game state
             and is asked to choose a move from list of valid moves
@@ -231,7 +231,7 @@ class MinMaxBot(Player):
 
             return alpha
 
-    def pass_control(self, board_state, capturing_piece):
+    def passControl(self, board_state, capturing_piece):
         if self.show_board:
             board_state.display()
 

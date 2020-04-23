@@ -69,7 +69,7 @@ def testSingleMoveTime(timer, depth, heuristic, board_state=None, capturing_piec
 
     player = players.MinMaxBot(pieces.Piece.BLACK, depth, heuristic, False)
 
-    timer.testFunction(player.pass_control, copy.deepcopy(board_state), copy.deepcopy(capturing_piece))
+    timer.testFunction(player.passControl, copy.deepcopy(board_state), copy.deepcopy(capturing_piece))
 
     if heuristic == heuristics.h1:
         timer.showResults(print_results=True, file=file, test_info="Depth = {}\nHeuristic 1\n".format(depth))

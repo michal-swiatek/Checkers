@@ -78,7 +78,7 @@ class MinimaxBotH1Test(unittest.TestCase):
         self.assertEqual(move[5], cy)
 
     def testStartingMove(self):
-        move = self.player.pass_control(self.board, None)
+        move = self.player.passControl(self.board, None)
 
         self.checkMove(move, 1, 5, 0, 4, None, None)
 
@@ -87,14 +87,14 @@ class MinimaxBotH1Test(unittest.TestCase):
         self.board.white_pieces[0].x = 4
         self.board.white_pieces[0].y = 4
 
-        move = self.player.pass_control(self.board, None)
+        move = self.player.passControl(self.board, None)
 
         self.checkMove(move, 3, 5, 5, 3, 4, 4)
 
     def testStartingMoveDepth7(self):
         self.player.depth = 7
 
-        move = self.player.pass_control(self.board, None)
+        move = self.player.passControl(self.board, None)
 
         self.checkMove(move, 1, 5, 0, 4, None, None)
 
@@ -105,7 +105,7 @@ class MinimaxBotH1Test(unittest.TestCase):
         self.board.white_pieces[0].x = 4
         self.board.white_pieces[0].y = 4
 
-        move = self.player.pass_control(self.board, None)
+        move = self.player.passControl(self.board, None)
 
         self.checkMove(move, 3, 5, 5, 3, 4, 4)
 
@@ -118,7 +118,7 @@ class MinimaxBotH2Test(MinimaxBotH1Test):
     def testStartingMoveDepth7(self):
         self.player.depth = 7
 
-        move = self.player.pass_control(self.board, None)
+        move = self.player.passControl(self.board, None)
 
         self.checkMove(move, 1, 5, 2, 4, None, None)
 

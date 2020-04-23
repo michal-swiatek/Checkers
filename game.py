@@ -41,9 +41,9 @@ class Game:
 
             # Get next move from player
             if self.current_player == Piece.WHITE:
-                next_move = self.white_player.pass_control(copy.deepcopy(self.board), self.capturing_piece)
+                next_move = self.white_player.passControl(copy.deepcopy(self.board), self.capturing_piece)
             else:
-                next_move = self.black_player.pass_control(copy.deepcopy(self.board), self.capturing_piece)
+                next_move = self.black_player.passControl(copy.deepcopy(self.board), self.capturing_piece)
 
             # Draw condition
             last_capture = self.move_counter - self.last_capture
