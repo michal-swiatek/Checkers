@@ -6,3 +6,5 @@ Game rules are an implementation of Russian Draughts: https://en.wikipedia.org/w
 Game is written in python, graphic version of game requires pygame library: https://pypi.org/project/pygame/
 To install pygame enter following command after python installation:
 pip install pygame
+
+Pygame version is an old version and is not a part of the project
