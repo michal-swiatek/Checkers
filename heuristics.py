@@ -1,3 +1,9 @@
+"""
+    Authors: Michal Swiatek, Jan Wasilewski
+    Github: https://github.com/michal-swiatek/Checkers
+"""
+
+
 from pieces import Piece
 
 
