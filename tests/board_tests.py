@@ -1,15 +1,15 @@
 import unittest
 
-import Board
+import board
 
 
 class BoardTest(unittest.TestCase):
     def setUp(self) -> None:
-        self.board = Board.Board()
+        self.board = board.Board()
 
     def testConstructor(self):
-        white_pieces = self.board.getPieces(Board.Piece.WHITE)
-        black_pieces = self.board.getPieces(Board.Piece.BLACK)
+        white_pieces = self.board.getPieces(board.Piece.WHITE)
+        black_pieces = self.board.getPieces(board.Piece.BLACK)
 
         # At the beginning of a game each player has 12 pieces
         self.assertEqual(len(white_pieces), 12)
@@ -19,7 +19,7 @@ class BoardTest(unittest.TestCase):
         grid = self.board.generateBoardState()
         self.assertEqual(grid[0][0].x, 0)
         self.assertEqual(grid[0][0].y, 0)
-        self.assertEqual(grid[0][0].white, Board.Piece.WHITE)
+        self.assertEqual(grid[0][0].white, board.Piece.WHITE)
 
     def testGenerateBitmap(self):
         bitmap = self.board.generateBitmap()
@@ -54,12 +54,12 @@ class BoardTest(unittest.TestCase):
         # Top right corner should contain black piece
         self.assertEqual(grid[7][7].x, 7)
         self.assertEqual(grid[7][7].y, 7)
-        self.assertEqual(grid[7][7].white, Board.Piece.BLACK)
+        self.assertEqual(grid[7][7].white, board.Piece.BLACK)
 
         # Bottom left corner should contain white piece
         self.assertEqual(grid[0][0].x, 0)
         self.assertEqual(grid[0][0].y, 0)
-        self.assertEqual(grid[0][0].white, Board.Piece.WHITE)
+        self.assertEqual(grid[0][0].white, board.Piece.WHITE)
 
         # Empty spot
         self.assertEqual(grid[1][0], None)

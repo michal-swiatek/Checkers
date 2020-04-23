@@ -1,6 +1,6 @@
 import itertools
 
-from Pieces import Piece, Man
+from pieces import Piece, Man
 
 
 class Board:
@@ -93,25 +93,24 @@ class Board:
 
         grid = self.generateBoardState()
 
-        c = 0
-        r = 7
+        row = 7
         print("   ###################", end='')
-        while r >= 0:
-            c = 0
-            print("\n", r, "#", end='')
-            while c < 8:
-                if grid[c][r] is None:
-                    if (r + c) % 2 == 0:
+        while row >= 0:
+            column = 0
+            print("\n", row, "#", end='')
+            while column < 8:
+                if grid[column][row] is None:
+                    if (row + column) % 2 == 0:
                         print(" +", end='')
                     else:
                         print(" .", end='')
-                elif grid[c][r].captured:
+                elif grid[column][row].captured:
                     print(" @", end='')
                 else:
-                    print(' ', grid[c][r].displayCharacter(), sep='', end='')
-                c = c + 1
+                    print(' ', grid[column][row].displayCharacter(), sep='', end='')
+                column = column + 1
             print(" #", end='')
-            r = r - 1
+            row = row - 1
         print("\n", "  ###################", "\n", "    0 1 2 3 4 5 6 7")
 
     def clearCaptured(self):

@@ -1,9 +1,9 @@
 import copy
 
-import Board
-import Pieces
-import Players
 import heuristics
+from board import Board
+from pieces import Piece, King
+from players import Player, Human, MinMaxBot
 
 
 class Game:
@@ -20,13 +20,13 @@ class Game:
     def __init__(self):
         self.running = True
 
-        self.board = Board.Board()  # current game state
+        self.board = Board()  # current game state
 
         self.white_player = None
         self.black_player = None
         self.initPlayers()
 
-        self.current_player = Pieces.Piece.WHITE
+        self.current_player = Piece.WHITE
 
         self.capturing_piece = None
 
@@ -40,7 +40,7 @@ class Game:
             print("Turn:", self.move_counter)
 
             # Get next move from player
-            if self.current_player == Pieces.Piece.WHITE:
+            if self.current_player == Piece.WHITE:
                 next_move = self.white_player.pass_control(copy.deepcopy(self.board), self.capturing_piece)
             else:
                 next_move = self.black_player.pass_control(copy.deepcopy(self.board), self.capturing_piece)
@@ -49,8 +49,8 @@ class Game:
             last_capture = self.move_counter - self.last_capture
             last_man_move = self.move_counter - self.last_man_move
 
-            if next_move == Players.Player.GAME_OVER:
-                if self.current_player == Pieces.Piece.WHITE:
+            if next_move == Player.GAME_OVER:
+                if self.current_player == Piece.WHITE:
                     print("\nBlack player wins!\n")
                     self.board.display()
                 else:
@@ -58,8 +58,8 @@ class Game:
                     self.board.display()
 
                 self.running = False
-            elif next_move == Players.Player.SURRENDER:
-                if self.current_player == Pieces.Piece.WHITE:
+            elif next_move == Player.SURRENDER:
+                if self.current_player == Piece.WHITE:
                     print("Black player wins! (White surrendered)")
                 else:
                     print("White player wins! (Black surrendered)")
@@ -105,7 +105,7 @@ class Game:
             if x1 == piece.x and y1 == piece.y:
                 # Promote piece
                 if (piece.white and y2 == 7) or (not piece.white and y2 == 0):
-                    pieces[i] = Pieces.King(piece.white, piece.x, piece.y)
+                    pieces[i] = King(piece.white, piece.x, piece.y)
 
                 # Move piece to new position
                 pieces[i].x = x2
@@ -168,19 +168,19 @@ class Game:
                 continue
 
             if choice == 0:
-                self.white_player = Players.Human(Pieces.Piece.WHITE)
-                self.black_player = Players.MinMaxBot(Pieces.Piece.BLACK, depth, heuristics.h1)
+                self.white_player = Human(Piece.WHITE)
+                self.black_player = MinMaxBot(Piece.BLACK, depth, heuristics.h1)
             elif choice == 1:
-                self.white_player = Players.Human(Pieces.Piece.WHITE)
-                self.black_player = Players.MinMaxBot(Pieces.Piece.BLACK, depth, heuristics.h2)
+                self.white_player = Human(Piece.WHITE)
+                self.black_player = MinMaxBot(Piece.BLACK, depth, heuristics.h2)
             elif choice == 2:
-                self.white_player = Players.MinMaxBot(Pieces.Piece.WHITE, depth, heuristics.h1_white)
-                self.black_player = Players.MinMaxBot(Pieces.Piece.BLACK, depth, heuristics.h2)
+                self.white_player = MinMaxBot(Piece.WHITE, depth, heuristics.h1_white)
+                self.black_player = MinMaxBot(Piece.BLACK, depth, heuristics.h2)
             elif choice == 3:
-                self.white_player = Players.MinMaxBot(Pieces.Piece.WHITE, depth, heuristics.h1_white)
-                self.black_player = Players.MinMaxBot(Pieces.Piece.BLACK, depth, heuristics.h1)
+                self.white_player = MinMaxBot(Piece.WHITE, depth, heuristics.h1_white)
+                self.black_player = MinMaxBot(Piece.BLACK, depth, heuristics.h1)
             elif choice == 4:
-                self.white_player = Players.MinMaxBot(Pieces.Piece.WHITE, depth, heuristics.h2_white)
-                self.black_player = Players.MinMaxBot(Pieces.Piece.BLACK, depth, heuristics.h2)
+                self.white_player = MinMaxBot(Piece.WHITE, depth, heuristics.h2_white)
+                self.black_player = MinMaxBot(Piece.BLACK, depth, heuristics.h2)
 
             break

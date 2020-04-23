@@ -1,5 +1,5 @@
-import Game
+import game
 
-game = Game.Game()
+game = game.Game()
 
 game.mainLoop()

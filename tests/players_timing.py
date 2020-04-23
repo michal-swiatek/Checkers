@@ -1,9 +1,9 @@
 import time
 import copy
 
-import Board
-import Pieces
-import Players
+import board
+import pieces
+import players
 import heuristics
 
 
@@ -65,9 +65,9 @@ class Timer:
 
 def testSingleMoveTime(timer, depth, heuristic, board_state=None, capturing_piece=None, file=None):
     if board_state is None:
-        board_state = Board.Board()
+        board_state = board.Board()
 
-    player = Players.MinMaxBot(Pieces.Piece.BLACK, depth, heuristic, False)
+    player = players.MinMaxBot(pieces.Piece.BLACK, depth, heuristic, False)
 
     timer.testFunction(player.pass_control, copy.deepcopy(board_state), copy.deepcopy(capturing_piece))
 

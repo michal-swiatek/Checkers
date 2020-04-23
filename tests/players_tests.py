@@ -1,15 +1,15 @@
 import unittest
 
-import Board
-import Pieces
-import Players
+import board
+import pieces
+import players
 import heuristics
 
 
 class PlayerTest(unittest.TestCase):
     def setUp(self) -> None:
-        self.player = Players.Player(Pieces.Piece.WHITE)
-        self.board = Board.Board()
+        self.player = players.Player(pieces.Piece.WHITE)
+        self.board = board.Board()
 
     def checkMove(self, move, x1, y1, x2, y2, cx, cy):
         self.assertEqual(move[0], x1)
@@ -66,8 +66,8 @@ class PlayerTest(unittest.TestCase):
 
 class MinimaxBotH1Test(unittest.TestCase):
     def setUp(self) -> None:
-        self.player = Players.MinMaxBot(Pieces.Piece.BLACK, 6, heuristics.h1, False)
-        self.board = Board.Board()
+        self.player = players.MinMaxBot(pieces.Piece.BLACK, 6, heuristics.h1, False)
+        self.board = board.Board()
 
     def checkMove(self, move, x1, y1, x2, y2, cx, cy):
         self.assertEqual(move[0], x1)
@@ -112,8 +112,8 @@ class MinimaxBotH1Test(unittest.TestCase):
 
 class MinimaxBotH2Test(MinimaxBotH1Test):
     def setUp(self) -> None:
-        self.player = Players.MinMaxBot(Pieces.Piece.BLACK, 6, heuristics.h2, False)
-        self.board = Board.Board()
+        self.player = players.MinMaxBot(pieces.Piece.BLACK, 6, heuristics.h2, False)
+        self.board = board.Board()
 
     def testStartingMoveDepth7(self):
         self.player.depth = 7

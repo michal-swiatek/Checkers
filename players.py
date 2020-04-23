@@ -1,5 +1,7 @@
-import Pieces
 import copy
+import math
+
+from pieces import Piece, King
 
 
 class Player:
@@ -84,7 +86,7 @@ class Human(Player):
         while True:
             board.display()
 
-            if self.color == Pieces.Piece.WHITE:
+            if self.color == Piece.WHITE:
                 print("\n\tWHITE turn")
             else:
                 print("\n\tBLACK turn")
@@ -142,23 +144,22 @@ class MinMaxBot(Player):
         else:
             return None
 
-
-    def capturePiece_MinMax(self, boardstate, piece_x, piece_y, current_player):
-        pieces = boardstate.getPieces(not current_player)
+    def capturePiece_MinMax(self, board_state, piece_x, piece_y, current_player):
+        pieces = board_state.getPieces(not current_player)
 
         for i, piece in enumerate(pieces):
             if piece_x == piece.x and piece_y == piece.y:
                 pieces[i].captured = True
 
-    def updateBoard_MinMax(self, boardstate, move, current_player):
+    def updateBoard_MinMax(self, board_state, move, current_player):
         x1, y1, x2, y2, capture_x, capture_y = move
-        pieces = boardstate.getPieces(current_player)
+        pieces = board_state.getPieces(current_player)
 
         for i, piece in enumerate(pieces):
             if x1 == piece.x and y1 == piece.y:
                 # Promote piece
                 if (piece.white and y2 == 7) or (not piece.white and y2 == 0):
-                    pieces[i] = Pieces.King(piece.white, piece.x, piece.y)
+                    pieces[i] = King(piece.white, piece.x, piece.y)
 
                 # Move piece to new position
                 pieces[i].x = x2
@@ -166,86 +167,86 @@ class MinMaxBot(Player):
 
                 # Capture occurred
                 if capture_x is not None:
-                    self.capturePiece_MinMax(boardstate, capture_x, capture_y, current_player)
+                    self.capturePiece_MinMax(board_state, capture_x, capture_y, current_player)
 
                     # Chain capture condition
-                    if self.checkPossibleCaptures_MinMax(boardstate, pieces[i]):
+                    if self.checkPossibleCaptures_MinMax(board_state, pieces[i]):
                         return pieces[i]
                     else:
-                        boardstate.clearCaptured()
+                        board_state.clearCaptured()
                         return None
 
                 break
 
+    def MinMax(self, board_state, depth, alpha, beta, current_player, capturing_piece, origin=False):
+        if self.depth - depth < 5:
+            if (board_state, depth) in self.explored:
+                return self.explored[(board_state, depth)]
 
-    def MinMax(self, boardstate, depth, alpha, beta, current_player, capturing_piece, origin):
-        if (self.depth - depth < 5):
-            if (boardstate, depth) in self.explored:
-                return self.explored[(boardstate, depth)]
-        if (depth == 0):
-            return self.heuristic(boardstate)
-        moves = self.getValidMoves(boardstate, capturing_piece, current_player)
-        if (len(moves) == 0 and capturing_piece == None):
-            val = self.heuristic(boardstate)
-            if (self.depth - depth < 5):
-                self.explored[(boardstate, depth)] = val
+        if depth == 0:
+            return self.heuristic(board_state)
+
+        moves = self.getValidMoves(board_state, capturing_piece, current_player)
+        if len(moves) == 0 and capturing_piece is None:
+            val = self.heuristic(board_state)
+            if self.depth - depth < 5:
+                self.explored[(board_state, depth)] = val
             return val
 
-        if (current_player != self.color):
+        if current_player != self.color:
             for i, move in enumerate(moves, 1):
-                backup = copy.deepcopy(boardstate)
-                capturing_piece = self.updateBoard_MinMax(boardstate, move, current_player)
-                if (not(capturing_piece is None)):
-                    beta = min(beta, self.MinMax(boardstate, depth, alpha, beta, current_player, capturing_piece, False))      #for purposes of multi-capture
+                backup = copy.deepcopy(board_state)
+                capturing_piece = self.updateBoard_MinMax(board_state, move, current_player)
+                if capturing_piece is not None:
+                    beta = min(beta, self.MinMax(board_state, depth, alpha, beta, current_player, capturing_piece))
                 else:
-                    beta = min(beta, self.MinMax(boardstate, depth-1, alpha, beta, (not current_player), None, False))
+                    beta = min(beta, self.MinMax(board_state, depth - 1, alpha, beta, not current_player, None))
 
-                boardstate = backup
-                if (alpha >= beta):
+                board_state = backup
+                if alpha >= beta:
                     break
 
-            if (self.depth - depth < 5):
-                self.explored[(boardstate, depth)] = beta
+            if self.depth - depth < 5:
+                self.explored[(board_state, depth)] = beta
+
             return beta
-        elif (current_player == self.color):
+        elif current_player == self.color:
             for i, move in enumerate(moves, 1):
-                backup = copy.deepcopy(boardstate)
-                capturing_piece = self.updateBoard_MinMax(boardstate, move, current_player)
-                if (not(capturing_piece is None)):
-                    alpha = max(alpha, self.MinMax(boardstate, depth, alpha, beta, current_player, capturing_piece, False))      #for purposes of multi-capture
+                backup = copy.deepcopy(board_state)
+                capturing_piece = self.updateBoard_MinMax(board_state, move, current_player)
+                if capturing_piece is not None:
+                    alpha = max(alpha, self.MinMax(board_state, depth, alpha, beta, current_player, capturing_piece))
                 else:
-                    alpha = max(alpha, self.MinMax(boardstate, depth-1, alpha, beta, (not current_player), None, False))
+                    alpha = max(alpha, self.MinMax(board_state, depth - 1, alpha, beta, not current_player, None))
 
-                boardstate = backup
-                if (alpha >= beta):
+                board_state = backup
+                if alpha >= beta:
                     break
 
-                if (origin):
+                if origin:
                     self.move_values.append(alpha)
-            if (self.depth - depth < 5):
-                self.explored[(boardstate, depth)] = alpha
+
+            if self.depth - depth < 5:
+                self.explored[(board_state, depth)] = alpha
+
             return alpha
-
-
-
-
-
 
     def pass_control(self, board_state, capturing_piece):
         if self.show_board:
             board_state.display()
 
-        if (len(self.getValidMoves(board_state, None, self.color)) == 0):
-            return "game over"
+        if len(self.getValidMoves(board_state, None, self.color)) == 0:
+            return Player.GAME_OVER
+
         self.possible_moves = []
         self.possible_moves = self.getValidMoves(board_state, capturing_piece, self.color)
         self.move_values = []
         self.explored.clear()
-        optimal_value = self.MinMax(board_state, self.depth, -10000, 10000, self.color, capturing_piece, True)            #depth control here for now
-        g = 0
-        while (g < len(self.possible_moves)):
-            if (optimal_value == self.move_values[g]):
+
+        optimal_value = self.MinMax(board_state, self.depth, -math.inf, math.inf, self.color, capturing_piece, True)
+
+        for g in range(len(self.possible_moves)):
+            if optimal_value == self.move_values[g]:
                 return self.possible_moves[g]
-            g = g + 1
 
         return "Error"

@@ -1,16 +1,16 @@
 import unittest
 
-import Pieces
+import pieces
 
 
 class PieceTest(unittest.TestCase):
     def setUp(self) -> None:
-        self.piece = Pieces.Piece(Pieces.Piece.WHITE, 0, 0)
+        self.piece = pieces.Piece(pieces.Piece.WHITE, 0, 0)
 
     def testConstructor(self):
         self.assertEqual(self.piece.x, 0)
         self.assertEqual(self.piece.y, 0)
-        self.assertEqual(self.piece.white, Pieces.Piece.WHITE)
+        self.assertEqual(self.piece.white, pieces.Piece.WHITE)
         self.assertEqual(self.piece.captured, False)
 
     def testUninitializedMethods(self):
@@ -22,7 +22,7 @@ class PieceTest(unittest.TestCase):
 
 class ManTest(unittest.TestCase):
     def setUp(self) -> None:
-        self.piece = Pieces.Man(Pieces.Piece.WHITE, 1, 1)
+        self.piece = pieces.Man(pieces.Piece.WHITE, 1, 1)
         self.bitmap = [[None for i in range(8)] for j in range(8)]
 
     def checkMove(self, move, x1, y1, x2, y2, cx, xy):
@@ -44,8 +44,8 @@ class ManTest(unittest.TestCase):
         self.checkMove(moves[1], 1, 1, 2, 2, None, None)
 
     def testCaptures(self):
-        self.bitmap[0][2] = Pieces.Piece.BLACK
-        self.bitmap[2][2] = Pieces.Piece.BLACK
+        self.bitmap[0][2] = pieces.Piece.BLACK
+        self.bitmap[2][2] = pieces.Piece.BLACK
 
         moves, captures = self.piece.generateValidMoves(self.bitmap)
 
@@ -54,14 +54,14 @@ class ManTest(unittest.TestCase):
 
         self.checkMove(captures[0], 1, 1, 3, 3, 2, 2)
 
-        self.bitmap[3][3] = Pieces.Piece.BLACK
+        self.bitmap[3][3] = pieces.Piece.BLACK
 
         moves, captures = self.piece.generateValidMoves(self.bitmap)
 
         self.assertEqual(len(captures), 0)
         self.assertEqual(len(moves), 0)
 
-        self.bitmap[3][3] = Pieces.Piece.WHITE
+        self.bitmap[3][3] = pieces.Piece.WHITE
 
         moves, captures = self.piece.generateValidMoves(self.bitmap)
 
@@ -69,7 +69,7 @@ class ManTest(unittest.TestCase):
         self.assertEqual(len(moves), 0)
 
     def testCapturesWithMoves(self):
-        self.bitmap[2][2] = Pieces.Piece.BLACK
+        self.bitmap[2][2] = pieces.Piece.BLACK
 
         moves, captures = self.piece.generateValidMoves(self.bitmap)
 
@@ -80,7 +80,7 @@ class ManTest(unittest.TestCase):
 
     def testCaptureBackwards(self):
         self.piece.y = 3
-        self.bitmap[2][2] = Pieces.Piece.BLACK
+        self.bitmap[2][2] = pieces.Piece.BLACK
 
         moves, captures = self.piece.generateValidMoves(self.bitmap)
 
@@ -95,11 +95,11 @@ class ManTest(unittest.TestCase):
 
 class KingTest(ManTest):
     def setUp(self) -> None:
-        self.piece = Pieces.King(Pieces.Piece.WHITE, 1, 1)
+        self.piece = pieces.King(pieces.Piece.WHITE, 1, 1)
         self.bitmap = [[None for i in range(8)] for j in range(8)]
 
     def testLongCapture(self):
-        self.bitmap[4][4] = Pieces.Piece.BLACK
+        self.bitmap[4][4] = pieces.Piece.BLACK
 
         moves, captures = self.piece.generateValidMoves(self.bitmap)
 
@@ -120,8 +120,8 @@ class KingTest(ManTest):
         self.checkMove(moves[1], 1, 1, 2, 2, None, None)
 
     def testCaptures(self):
-        self.bitmap[0][2] = Pieces.Piece.BLACK
-        self.bitmap[2][2] = Pieces.Piece.BLACK
+        self.bitmap[0][2] = pieces.Piece.BLACK
+        self.bitmap[2][2] = pieces.Piece.BLACK
 
         moves, captures = self.piece.generateValidMoves(self.bitmap)
 
@@ -130,14 +130,14 @@ class KingTest(ManTest):
 
         self.checkMove(captures[0], 1, 1, 3, 3, 2, 2)
 
-        self.bitmap[3][3] = Pieces.Piece.BLACK
+        self.bitmap[3][3] = pieces.Piece.BLACK
 
         moves, captures = self.piece.generateValidMoves(self.bitmap)
 
         self.assertEqual(len(captures), 0)
         self.assertEqual(len(moves), 2)
 
-        self.bitmap[3][3] = Pieces.Piece.WHITE
+        self.bitmap[3][3] = pieces.Piece.WHITE
 
         moves, captures = self.piece.generateValidMoves(self.bitmap)
 
@@ -145,7 +145,7 @@ class KingTest(ManTest):
         self.assertEqual(len(moves), 2)
 
     def testCapturesWithMoves(self):
-        self.bitmap[2][2] = Pieces.Piece.BLACK
+        self.bitmap[2][2] = pieces.Piece.BLACK
 
         moves, captures = self.piece.generateValidMoves(self.bitmap)
 
@@ -156,7 +156,7 @@ class KingTest(ManTest):
 
     def testCaptureBackwards(self):
         self.piece.y = 3
-        self.bitmap[2][2] = Pieces.Piece.BLACK
+        self.bitmap[2][2] = pieces.Piece.BLACK
 
         moves, captures = self.piece.generateValidMoves(self.bitmap)
 
